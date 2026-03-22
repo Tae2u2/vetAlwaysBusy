@@ -1,37 +1,46 @@
-import React, { useState } from 'react';
-import { verifyPassword } from '../utils/auth';
-import { useAuth } from '../hooks/useAuth';
-import { Eye, EyeOff, KeyRound, Lock, Stethoscope } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { verifyPassword } from "../utils/auth";
+import { useAuth } from "../hooks/useAuth";
+import { Eye, EyeOff, KeyRound, Lock, Stethoscope } from "lucide-react";
+
+const CLAUDE_API_KEY = process.env.REACT_APP_CLAUDE_API_KEY || "";
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
-  const [password, setPassword] = useState('');
-  const [apiKey, setApiKey] = useState('');
+  const [password, setPassword] = useState("");
+  const [apiKey, setApiKey] = useState(CLAUDE_API_KEY);
   const [showPassword, setShowPassword] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (!password || !apiKey) {
-      setError('비밀번호와 API 키를 모두 입력해주세요.');
+      setError("비밀번호와 API 키를 모두 입력해주세요.");
       return;
     }
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const ok = await verifyPassword(password);
+      console.log("인증 결과", ok);
       if (!ok) {
-        setError('비밀번호가 올바르지 않습니다.');
+        setError("비밀번호가 올바르지 않습니다.");
         return;
       }
       login(apiKey);
     } catch {
-      setError('인증 중 오류가 발생했습니다.');
+      setError("인증 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (apiKey === "" && CLAUDE_API_KEY) {
+      setApiKey(CLAUDE_API_KEY);
+    }
+  }, [apiKey]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
@@ -49,7 +58,9 @@ export const LoginPage: React.FC = () => {
             <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg mb-4">
               🐾
             </div>
-            <h1 className="text-white font-bold text-xl tracking-tight">우리동물메디컬센터</h1>
+            <h1 className="text-white font-bold text-xl tracking-tight">
+              우리동물메디컬센터
+            </h1>
             <p className="text-blue-200 text-sm mt-1">진료 보고서 시스템</p>
           </div>
 
@@ -61,10 +72,10 @@ export const LoginPage: React.FC = () => {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   placeholder="비밀번호 입력"
                   className="w-full px-4 py-3 pr-12 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none text-sm transition-colors"
                 />
@@ -84,10 +95,10 @@ export const LoginPage: React.FC = () => {
               </label>
               <div className="relative">
                 <input
-                  type={showApiKey ? 'text' : 'password'}
+                  type={showApiKey ? "text" : "password"}
                   value={apiKey}
-                  onChange={e => setApiKey(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   placeholder="sk-ant-..."
                   className="w-full px-4 py-3 pr-12 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none text-sm font-mono transition-colors"
                 />

@@ -1,26 +1,27 @@
 export const HOSPITAL_INFO = {
-  name: '우리동물메디컬센터',
-  nameEn: 'Woori Animal Medical Center',
-  since: 'SINCE 1999',
-  address: '서울시 금천구 남부순환로 1386',
-  tel: '02-853-7582',
-  email: 'wramc@naver.com',
-  tagline: '24시',
+  name: "우리동물메디컬센터",
+  nameEn: "Woori Animal Medical Center",
+  since: "SINCE 1999",
+  address: "서울시 금천구 남부순환로 1386",
+  tel: "02-853-7582",
+  email: "wramc@naver.com",
+  tagline: "24시",
 };
 
-export const PASSWORD_HASH = '$2a$10$xKNRdvIBEYoGnFEz3K4gROOmfWCjB.8MmXbFVz4Sn.u9E6gI3d2hy';
+export const PASSWORD_HASH =
+  "$2a$10$xKNRdvIBEYoGnFEz3K4gROOmfWCjB.8MmXbFVz4Sn.u9E6gI3d2hy";
 // bcrypt hash of 'vet!7582!woori'
 
 export const REPORT_SECTIONS = [
-  { id: 'chiefComplaint', title: '주호소 및 임상 병력', key: 'chiefComplaint' },
-  { id: 'preop', title: '수술 전 평가', key: 'preop' },
-  { id: 'bloodTests', title: '혈액 검사', key: 'bloodTests' },
-  { id: 'vcm', title: 'VCM 검사', key: 'vcmFindings' },
-  { id: 'xray', title: 'DR (X-ray) 소견', key: 'xrayFindings' },
-  { id: 'ultrasound', title: 'US (초음파) 소견', key: 'ultrasoundFindings' },
-  { id: 'ct', title: 'CT 소견', key: 'ctFindings' },
-  { id: 'surgical', title: '수술 과정', key: 'surgicalProcedure' },
-  { id: 'postop', title: '수술 후 관리 및 계획', key: 'postopManagement' },
+  { id: "chiefComplaint", title: "주호소 및 임상 병력", key: "chiefComplaint" },
+  { id: "preop", title: "수술 전 평가", key: "preop" },
+  { id: "bloodTests", title: "혈액 검사", key: "bloodTests" },
+  { id: "vcm", title: "VCM 검사", key: "vcmFindings" },
+  { id: "xray", title: "DR (X-ray) 소견", key: "xrayFindings" },
+  { id: "ultrasound", title: "US (초음파) 소견", key: "ultrasoundFindings" },
+  { id: "ct", title: "CT 소견", key: "ctFindings" },
+  { id: "surgical", title: "수술 과정", key: "surgicalProcedure" },
+  { id: "postop", title: "수술 후 관리 및 계획", key: "postopManagement" },
 ];
 
 export const MAX_IMAGES = 10;
@@ -39,7 +40,7 @@ export const AI_SYSTEM_PROMPT = `당신은 수의학 전문 진료 보고서 작
     "gender": "성별",
     "age": "나이",
     "weight": "체중",
-    "surgeryDate": "수술일자",
+    "surgeryDate": "수술(진료)일자",
     "referralHospital": "의뢰병원"
   },
   "chiefComplaint": "주호소 및 임상 병력 내용",

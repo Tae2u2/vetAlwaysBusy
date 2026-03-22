@@ -3,6 +3,9 @@ import { UploadedImage } from '../../types';
 import { FileText, ImagePlus, Upload, X, AlertCircle } from 'lucide-react';
 import { MAX_IMAGES } from '../../constants';
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const LARGE_FILE_THRESHOLD = 5 * 1024 * 1024; // 5MB
+
 interface Props {
   files: File[];
   images: UploadedImage[];
@@ -17,24 +20,35 @@ export const UploadStep: React.FC<Props> = ({
   files, images, onFilesChange, onImagesChange, onProcess, processing, error
 }) => {
   const [dragOver, setDragOver] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
+
+  const addFiles = useCallback((incoming: File[]) => {
+    const valid = incoming.filter(f => f.name.endsWith('.pdf') || f.name.endsWith('.docx') || f.name.endsWith('.doc'));
+    const oversized = valid.some(f => f.size > MAX_FILE_SIZE);
+    if (oversized) {
+      setSizeError(true);
+      return;
+    }
+    setSizeError(false);
+    onFilesChange([...files, ...valid.filter(f => f.size <= MAX_FILE_SIZE)]);
+  }, [files, onFilesChange]);
 
   const handleFilesDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    const dropped = Array.from(e.dataTransfer.files).filter(
-      f => f.name.endsWith('.pdf') || f.name.endsWith('.docx') || f.name.endsWith('.doc')
-    );
-    onFilesChange([...files, ...dropped]);
-  }, [files, onFilesChange]);
+    addFiles(Array.from(e.dataTransfer.files));
+  }, [addFiles]);
 
   const handleFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const selected = Array.from(e.target.files);
-    onFilesChange([...files, ...selected]);
+    addFiles(Array.from(e.target.files));
     e.target.value = '';
   };
 
+  const hasLargeFile = files.some(f => f.size > LARGE_FILE_THRESHOLD);
+
   const removeFile = (idx: number) => {
+    setSizeError(false);
     onFilesChange(files.filter((_, i) => i !== idx));
   };
 
@@ -99,6 +113,22 @@ export const UploadStep: React.FC<Props> = ({
                 </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Size error */}
+        {sizeError && (
+          <div className="mt-2 flex items-center gap-2 text-red-600 text-sm font-medium">
+            <AlertCircle size={15} className="shrink-0" />
+            파일 용량 제한때문에 업로드 불가
+          </div>
+        )}
+
+        {/* Large file warning */}
+        {hasLargeFile && (
+          <div className="mt-2 flex items-center gap-2 text-amber-600 text-sm font-medium">
+            <AlertCircle size={15} className="shrink-0" />
+            용량이 커서 AI 토큰 소모가 큰 작업이 실행됩니다.
           </div>
         )}
       </section>

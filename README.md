@@ -31,16 +31,6 @@ npm start
 
 ### 4. 프로덕션 빌드
 npm run build
-
----
-
-## 로그인 정보
-
-- 시스템 비밀번호: vet!7582!woori
-- Claude API 키: 로그인 시 직접 입력 (Anthropic Console 발급)
-
-보안 참고: 비밀번호는 bcrypt 해시로 저장, API 키는 sessionStorage 임시 저장 (탭 닫으면 삭제)
-
 ---
 
 ## 이미지 슬롯 매핑

@@ -1,8 +1,8 @@
-import React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider, useAuth } from './hooks/useAuth';
-import { LoginPage } from './pages/LoginPage';
-import { WorkspacePage } from './pages/WorkspacePage';
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider, useAuth } from "./hooks/useAuth";
+import { LoginPage } from "./pages/LoginPage";
+import { WorkspacePage } from "./pages/WorkspacePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {

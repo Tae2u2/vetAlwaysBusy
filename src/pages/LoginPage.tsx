@@ -3,12 +3,10 @@ import { verifyPassword } from "../utils/auth";
 import { useAuth } from "../hooks/useAuth";
 import { Eye, EyeOff, KeyRound, Lock, Stethoscope } from "lucide-react";
 
-const CLAUDE_API_KEY = process.env.REACT_APP_CLAUDE_API_KEY || "";
-
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const [password, setPassword] = useState("");
-  const [apiKey, setApiKey] = useState(CLAUDE_API_KEY);
+  const [apiKey, setApiKey] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
   const [error, setError] = useState("");
@@ -35,12 +33,6 @@ export const LoginPage: React.FC = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (apiKey === "" && CLAUDE_API_KEY) {
-      setApiKey(CLAUDE_API_KEY);
-    }
-  }, [apiKey]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">

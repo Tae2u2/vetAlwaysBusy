@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { verifyPassword } from "../utils/auth";
 import { useAuth } from "../hooks/useAuth";
 import { Eye, EyeOff, KeyRound, Lock, Stethoscope } from "lucide-react";

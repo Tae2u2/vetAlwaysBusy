@@ -24,10 +24,10 @@ export interface ImageSlot {
   caption?: string;
 }
 
-export interface UploadedImage {
+export interface SectionImage {
   file: File;
   previewUrl: string;
-  slotNumber: number;
+  caption?: string;
 }
 
 export interface ReportData {
@@ -41,7 +41,7 @@ export interface ReportData {
   surgicalProcedure: string;
   postopManagement: string;
   sections: ReportSection[];
-  images: UploadedImage[];
+  images: Record<string, SectionImage[]>;
 }
 
 export interface ParsedDocument {

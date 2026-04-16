@@ -1,7 +1,8 @@
 import React from 'react';
-import { ReportData } from '../../types';
+import { ReportData, SectionImage } from '../../types';
 import { Field } from './Field';
 import { SectionCard } from './SectionCard';
+import { ImageSlotEditor } from './ImageSlotEditor';
 
 interface Props {
   data: ReportData;
@@ -14,6 +15,9 @@ export const ReportEditor: React.FC<Props> = ({ data, onChange }) => {
 
   const updatePatient = (key: keyof ReportData['patientInfo'], value: string) =>
     onChange({ ...data, patientInfo: { ...data.patientInfo, [key]: value } });
+
+  const updateImages = (sectionKey: string, sectionImages: SectionImage[]) =>
+    onChange({ ...data, images: { ...data.images, [sectionKey]: sectionImages } });
 
   return (
     <div className="space-y-4">
@@ -32,35 +36,63 @@ export const ReportEditor: React.FC<Props> = ({ data, onChange }) => {
       </SectionCard>
 
       <SectionCard title="주호소 및 임상 병력">
-        <Field label="" value={data.chiefComplaint}     onChange={v => update('chiefComplaint', v)}     multiline placeholder="주호소 및 임상 병력을 입력하세요..." />
+        <Field label="" value={data.chiefComplaint} onChange={v => update('chiefComplaint', v)} multiline placeholder="주호소 및 임상 병력을 입력하세요..." />
       </SectionCard>
 
-      <SectionCard title="혈액 검사 소견" badge="이미지 슬롯 1-2">
-        <Field label="" value={data.bloodTests}         onChange={v => update('bloodTests', v)}         multiline placeholder="혈액 검사 결과 요약..." />
+      <SectionCard title="혈액 검사 소견">
+        <Field label="" value={data.bloodTests} onChange={v => update('bloodTests', v)} multiline placeholder="혈액 검사 결과 요약..." />
+        <ImageSlotEditor
+          images={data.images['bloodTests'] ?? []}
+          onImagesChange={imgs => updateImages('bloodTests', imgs)}
+        />
       </SectionCard>
 
-      <SectionCard title="VCM 검사 소견" badge="이미지 슬롯 3">
-        <Field label="" value={data.vcmFindings}        onChange={v => update('vcmFindings', v)}        multiline placeholder="VCM 검사 결과..." />
+      <SectionCard title="VCM 검사 소견">
+        <Field label="" value={data.vcmFindings} onChange={v => update('vcmFindings', v)} multiline placeholder="VCM 검사 결과..." />
+        <ImageSlotEditor
+          images={data.images['vcmFindings'] ?? []}
+          onImagesChange={imgs => updateImages('vcmFindings', imgs)}
+        />
       </SectionCard>
 
-      <SectionCard title="DR (X-ray) 소견" badge="이미지 슬롯 4-5">
-        <Field label="" value={data.xrayFindings}       onChange={v => update('xrayFindings', v)}       multiline placeholder="방사선 검사 소견..." />
+      <SectionCard title="DR (X-ray) 소견">
+        <Field label="" value={data.xrayFindings} onChange={v => update('xrayFindings', v)} multiline placeholder="방사선 검사 소견..." />
+        <ImageSlotEditor
+          images={data.images['xrayFindings'] ?? []}
+          onImagesChange={imgs => updateImages('xrayFindings', imgs)}
+        />
       </SectionCard>
 
       <SectionCard title="US (초음파) 소견">
         <Field label="" value={data.ultrasoundFindings} onChange={v => update('ultrasoundFindings', v)} multiline placeholder="초음파 검사 소견..." />
+        <ImageSlotEditor
+          images={data.images['ultrasoundFindings'] ?? []}
+          onImagesChange={imgs => updateImages('ultrasoundFindings', imgs)}
+        />
       </SectionCard>
 
-      <SectionCard title="CT 소견" badge="이미지 슬롯 6-7">
-        <Field label="" value={data.ctFindings}         onChange={v => update('ctFindings', v)}         multiline placeholder="CT 검사 소견..." />
+      <SectionCard title="CT 소견">
+        <Field label="" value={data.ctFindings} onChange={v => update('ctFindings', v)} multiline placeholder="CT 검사 소견..." />
+        <ImageSlotEditor
+          images={data.images['ctFindings'] ?? []}
+          onImagesChange={imgs => updateImages('ctFindings', imgs)}
+        />
       </SectionCard>
 
-      <SectionCard title="수술 과정" badge="이미지 슬롯 8-10">
-        <Field label="" value={data.surgicalProcedure}  onChange={v => update('surgicalProcedure', v)}  multiline placeholder="수술명 및 수술 과정 상세..." />
+      <SectionCard title="수술 과정">
+        <Field label="" value={data.surgicalProcedure} onChange={v => update('surgicalProcedure', v)} multiline placeholder="수술명 및 수술 과정 상세..." />
+        <ImageSlotEditor
+          images={data.images['surgicalProcedure'] ?? []}
+          onImagesChange={imgs => updateImages('surgicalProcedure', imgs)}
+        />
       </SectionCard>
 
       <SectionCard title="수술 후 관리 및 계획">
-        <Field label="" value={data.postopManagement}   onChange={v => update('postopManagement', v)}   multiline placeholder="수술 후 관리 계획..." />
+        <Field label="" value={data.postopManagement} onChange={v => update('postopManagement', v)} multiline placeholder="수술 후 관리 계획..." />
+        <ImageSlotEditor
+          images={data.images['postopManagement'] ?? []}
+          onImagesChange={imgs => updateImages('postopManagement', imgs)}
+        />
       </SectionCard>
     </div>
   );

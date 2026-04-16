@@ -5,7 +5,7 @@ import { AppHeader, Step } from "../components/layout/AppHeader";
 import { UploadStep } from "../components/upload/UploadStep";
 import { ReportEditor } from "../components/editor/ReportEditor";
 import { PreviewPanel } from "../components/preview/PreviewPanel";
-import { ReportData, UploadedImage } from "../types";
+import { ReportData } from "../types";
 import { extractTextFromFile } from "../utils/fileParser";
 import { parseReportWithClaude } from "../utils/claudeApi";
 
@@ -30,14 +30,13 @@ const EMPTY_DATA: ReportData = {
   surgicalProcedure: "",
   postopManagement: "",
   sections: [],
-  images: [],
+  images: {},
 };
 
 export const WorkspacePage: React.FC = () => {
   const { logout, apiKey } = useAuth();
   const [step, setStep] = useState<Step>("upload");
   const [files, setFiles] = useState<File[]>([]);
-  const [images, setImages] = useState<UploadedImage[]>([]);
   const [reportData, setReportData] = useState<ReportData>(EMPTY_DATA);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
@@ -57,7 +56,7 @@ export const WorkspacePage: React.FC = () => {
           ...EMPTY_DATA.patientInfo,
           ...(parsed.patientInfo || {}),
         },
-        images,
+        images: {},
         sections: [],
       });
       setStep("edit");
@@ -66,11 +65,6 @@ export const WorkspacePage: React.FC = () => {
     } finally {
       setProcessing(false);
     }
-  };
-
-  const handleImagesChange = (newImages: UploadedImage[]) => {
-    setImages(newImages);
-    setReportData((prev) => ({ ...prev, images: newImages }));
   };
 
   return (
@@ -96,9 +90,7 @@ export const WorkspacePage: React.FC = () => {
             </div>
             <UploadStep
               files={files}
-              images={images}
               onFilesChange={(files) => setFiles(files)}
-              onImagesChange={handleImagesChange}
               onProcess={handleProcess}
               processing={processing}
               error={error}
@@ -128,7 +120,7 @@ export const WorkspacePage: React.FC = () => {
               </div>
               <ReportEditor
                 data={reportData}
-                onChange={(data) => setReportData({ ...data, images })}
+                onChange={setReportData}
               />
             </div>
 

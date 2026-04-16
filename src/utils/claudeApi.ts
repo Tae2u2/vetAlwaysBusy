@@ -3,6 +3,45 @@ import { AI_SYSTEM_PROMPT } from "../constants";
 
 const MAX_CHARS = 50000;
 
+/** string[] 배열을 개조식 문자열로 변환 */
+const formatList = (items: string[] | undefined): string => {
+  if (!items || items.length === 0) return '';
+  return items.map(item => `• ${item}`).join('\n');
+};
+
+/**
+ * bloodTests: { cbc[], chemistry[], electrolyte[] } → 카테고리 헤더 포함 문자열
+ */
+const formatBloodTests = (bt: any): string => {
+  const sections: string[] = [];
+  if (bt?.cbc?.length)         sections.push(`[CBC]\n${formatList(bt.cbc)}`);
+  if (bt?.chemistry?.length)   sections.push(`[Chemistry]\n${formatList(bt.chemistry)}`);
+  if (bt?.electrolyte?.length) sections.push(`[Electrolyte]\n${formatList(bt.electrolyte)}`);
+  return sections.join('\n\n');
+};
+
+/** Claude 새 JSON 구조 → ReportData flat 구조로 매핑 */
+const mapToReportData = (raw: any): Partial<ReportData> => {
+  const { patientInfo, chiefComplaint, diagnosticResults, surgicalProcedure, postopManagement } = raw;
+
+  const surgicalText = [
+    surgicalProcedure?.name ? `수술명: ${surgicalProcedure.name}` : '',
+    formatList(surgicalProcedure?.details),
+  ].filter(Boolean).join('\n');
+
+  return {
+    patientInfo,
+    chiefComplaint:     chiefComplaint || '',
+    bloodTests:         formatBloodTests(diagnosticResults?.bloodTests),
+    vcmFindings:        '',
+    xrayFindings:       formatList(diagnosticResults?.xrayFindings),
+    ultrasoundFindings: formatList(diagnosticResults?.ultrasoundFindings),
+    ctFindings:         '',
+    surgicalProcedure:  surgicalText,
+    postopManagement:   formatList(postopManagement),
+  };
+};
+
 export const parseReportWithClaude = async (
   text: string,
   apiKey: string,
@@ -41,14 +80,17 @@ export const parseReportWithClaude = async (
   const data = await response.json();
   const content = data.content[0]?.text || "";
 
-  const cleanJson = content
-    .replace(/```json\n?/g, "")
-    .replace(/```\n?/g, "")
-    .trim();
+  // 앞뒤 설명 텍스트를 무시하고 {...} 블록만 추출
+  const jsonMatch = content.match(/\{[\s\S]*\}/);
+  const cleanJson = jsonMatch ? jsonMatch[0].trim() : '';
 
   try {
-    return JSON.parse(cleanJson);
-  } catch {
+    if (!cleanJson) throw new Error('JSON 블록을 찾을 수 없습니다.');
+    const raw = JSON.parse(cleanJson);
+    return mapToReportData(raw);
+  } catch (e) {
+    console.error('[Claude 파싱 실패] raw content:', content);
+    console.error('[Claude 파싱 실패] error:', e);
     throw new Error("AI 응답을 파싱하는데 실패했습니다.");
   }
 };

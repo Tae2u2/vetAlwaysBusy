@@ -1,24 +1,20 @@
-import { ReportData, UploadedImage } from '../types';
+import { ReportData, SectionImage } from '../types';
 import { HOSPITAL_INFO } from '../constants';
-
-const getImageBySlot = (images: UploadedImage[], slot: number): string => {
-  const img = images.find(i => i.slotNumber === slot);
-  return img ? img.previewUrl : '';
-};
 
 export const generateReportHTML = (data: ReportData): string => {
   const { patientInfo, images } = data;
 
-  const renderSection = (title: string, content: string, imageSlots: number[] = []) => {
-    if (!content && imageSlots.every(s => !getImageBySlot(images, s))) return '';
-    
-    const imgHTML = imageSlots
-      .map(slot => {
-        const url = getImageBySlot(images, slot);
-        if (!url) return '';
-        return `<div class="img-wrap"><img src="${url}" alt="검사 이미지 ${slot}"/></div>`;
+  const renderSection = (title: string, content: string, sectionKey?: string) => {
+    const sectionImages: SectionImage[] = sectionKey ? (images[sectionKey] ?? []) : [];
+    if (!content && sectionImages.length === 0) return '';
+
+    const imgHTML = sectionImages
+      .map(img => {
+        const captionHTML = img.caption
+          ? `<div class="img-caption">${img.caption}</div>`
+          : '';
+        return `<div class="img-wrap"><img src="${img.previewUrl}" alt="검사 이미지"/>${captionHTML}</div>`;
       })
-      .filter(Boolean)
       .join('');
 
     return `
@@ -239,6 +235,14 @@ export const generateReportHTML = (data: ReportData): string => {
     object-fit: contain;
     display: block;
   }
+  .img-caption {
+    background: #fff;
+    padding: 5px 10px;
+    font-size: 11px;
+    color: #4a5568;
+    text-align: center;
+    border-top: 1px solid #dde6f4;
+  }
 
   /* ── FOOTER ── */
   .footer {
@@ -327,14 +331,14 @@ export const generateReportHTML = (data: ReportData): string => {
 
   <!-- SECTIONS -->
   <div class="content">
-    ${renderSection('1. 주호소 및 임상 병력', data.chiefComplaint, [])}
-    ${renderSection('2. 수술 전 평가 – 혈액 검사', data.bloodTests, [1, 2])}
-    ${renderSection('3. 수술 전 평가 – VCM 검사', data.vcmFindings, [3])}
-    ${renderSection('4. DR (X-ray) 소견', data.xrayFindings, [4, 5])}
-    ${renderSection('5. US (초음파) 소견', data.ultrasoundFindings, [])}
-    ${renderSection('6. CT 소견', data.ctFindings, [6, 7])}
-    ${renderSection('7. 수술 과정', data.surgicalProcedure, [8, 9, 10])}
-    ${renderSection('8. 수술 후 관리 및 계획', data.postopManagement, [])}
+    ${renderSection('1. 주호소 및 임상 병력', data.chiefComplaint)}
+    ${renderSection('2. 수술 전 평가 – 혈액 검사', data.bloodTests, 'bloodTests')}
+    ${renderSection('3. 수술 전 평가 – VCM 검사', data.vcmFindings, 'vcmFindings')}
+    ${renderSection('4. DR (X-ray) 소견', data.xrayFindings, 'xrayFindings')}
+    ${renderSection('5. US (초음파) 소견', data.ultrasoundFindings, 'ultrasoundFindings')}
+    ${renderSection('6. CT 소견', data.ctFindings, 'ctFindings')}
+    ${renderSection('7. 수술 과정', data.surgicalProcedure, 'surgicalProcedure')}
+    ${renderSection('8. 수술 후 관리 및 계획', data.postopManagement, 'postopManagement')}
   </div>
 
   <!-- FOOTER -->

@@ -7,7 +7,8 @@ interface Props {
   files: File[];
   onFilesChange: (files: File[]) => void;
   onProcess: () => void;
-  processing: boolean;
+  onProcessBlog: () => void;
+  processing: 'report' | 'blog' | null;
   error: string;
 }
 
@@ -15,6 +16,7 @@ export const UploadStep: React.FC<Props> = ({
   files,
   onFilesChange,
   onProcess,
+  onProcessBlog,
   processing,
   error,
 }) => (
@@ -28,10 +30,19 @@ export const UploadStep: React.FC<Props> = ({
       </div>
     )}
 
-    <GenerateButton
-      disabled={files.length === 0}
-      processing={processing}
-      onClick={onProcess}
-    />
+    <div className="space-y-3">
+      <GenerateButton
+        disabled={files.length === 0 || processing === 'blog'}
+        processing={processing === 'report'}
+        onClick={onProcess}
+        variant="report"
+      />
+      <GenerateButton
+        disabled={files.length === 0 || processing === 'report'}
+        processing={processing === 'blog'}
+        onClick={onProcessBlog}
+        variant="blog"
+      />
+    </div>
   </div>
 );

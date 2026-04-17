@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { ReportData } from "../../types";
-import { generateReportHTML } from "../../utils/reportGenerator";
+import { generateHTML } from "../../utils/reportGenerator";
+import { GenerateType } from "../../constants";
 import { HOSPITAL_INFO } from "../../constants";
 import { ActionBar } from "./ActionBar";
 import { EmailForm } from "./EmailForm";
@@ -111,9 +112,10 @@ async function generatePDFBase64(htmlContent: string): Promise<string> {
 
 interface Props {
   data: ReportData;
+  type?: GenerateType;
 }
 
-export const PreviewPanel: React.FC<Props> = ({ data }) => {
+export const PreviewPanel: React.FC<Props> = ({ data, type = 'report' }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSending, setEmailSending] = useState(false);
@@ -121,7 +123,7 @@ export const PreviewPanel: React.FC<Props> = ({ data }) => {
     "idle",
   );
 
-  const htmlContent = generateReportHTML(data);
+  const htmlContent = generateHTML(data, type);
 
   const handlePrint = () => {
     iframeRef.current?.contentWindow?.print();

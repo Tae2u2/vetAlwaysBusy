@@ -1,5 +1,5 @@
 import { ReportData } from "../types";
-import { AI_SYSTEM_PROMPT } from "../constants";
+import { GenerateType, PROMPT_MAP } from "../constants";
 
 const MAX_CHARS = 50000;
 
@@ -45,6 +45,7 @@ const mapToReportData = (raw: any): Partial<ReportData> => {
 export const parseReportWithClaude = async (
   text: string,
   apiKey: string,
+  type: GenerateType = 'report',
 ): Promise<Partial<ReportData>> => {
   const truncated =
     text.length > MAX_CHARS
@@ -62,7 +63,7 @@ export const parseReportWithClaude = async (
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
       max_tokens: 8192,
-      system: AI_SYSTEM_PROMPT,
+      system: PROMPT_MAP[type],
       messages: [
         {
           role: "user",

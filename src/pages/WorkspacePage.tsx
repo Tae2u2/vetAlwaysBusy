@@ -6,6 +6,7 @@ import { UploadStep } from "../components/upload/UploadStep";
 import { ReportEditor } from "../components/editor/ReportEditor";
 import { PreviewPanel } from "../components/preview/PreviewPanel";
 import { ReportData } from "../types";
+import { GenerateType } from "../constants";
 import { extractTextFromFile } from "../utils/fileParser";
 import { parseReportWithClaude } from "../utils/claudeApi";
 
@@ -38,17 +39,18 @@ export const WorkspacePage: React.FC = () => {
   const [step, setStep] = useState<Step>("upload");
   const [files, setFiles] = useState<File[]>([]);
   const [reportData, setReportData] = useState<ReportData>(EMPTY_DATA);
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState<'report' | 'blog' | null>(null);
+  const [generateType, setGenerateType] = useState<GenerateType>('report');
   const [error, setError] = useState("");
 
-  const handleProcess = async () => {
+  const runProcess = async (type: 'report' | 'blog') => {
     if (!files.length) return;
-    setProcessing(true);
+    setProcessing(type);
     setError("");
     try {
       const texts = await Promise.all(files.map(extractTextFromFile));
       const combinedText = texts.join("\n\n--- 다음 문서 ---\n\n");
-      const parsed = await parseReportWithClaude(combinedText, apiKey);
+      const parsed = await parseReportWithClaude(combinedText, apiKey, type);
       setReportData({
         ...EMPTY_DATA,
         ...parsed,
@@ -59,13 +61,17 @@ export const WorkspacePage: React.FC = () => {
         images: {},
         sections: [],
       });
+      setGenerateType(type);
       setStep("edit");
     } catch (e: any) {
       setError(e.message || "AI 분석 중 오류가 발생했습니다.");
     } finally {
-      setProcessing(false);
+      setProcessing(null);
     }
   };
+
+  const handleProcess = () => runProcess('report');
+  const handleProcessBlog = () => runProcess('blog');
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -92,6 +98,7 @@ export const WorkspacePage: React.FC = () => {
               files={files}
               onFilesChange={(files) => setFiles(files)}
               onProcess={handleProcess}
+              onProcessBlog={handleProcessBlog}
               processing={processing}
               error={error}
             />
@@ -135,7 +142,7 @@ export const WorkspacePage: React.FC = () => {
                 </p>
               </div>
               <div className="sticky top-20">
-                <PreviewPanel data={reportData} />
+                <PreviewPanel data={reportData} type={generateType} />
               </div>
             </div>
           </div>
@@ -160,7 +167,7 @@ export const WorkspacePage: React.FC = () => {
               </button>
             </div>
             <div style={{ height: "calc(100vh - 160px)" }}>
-              <PreviewPanel data={reportData} />
+              <PreviewPanel data={reportData} type={generateType} />
             </div>
           </div>
         )}

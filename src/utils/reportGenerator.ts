@@ -1,27 +1,33 @@
-import { ReportData, SectionImage } from '../types';
-import { HOSPITAL_INFO } from '../constants';
+import { ReportData, SectionImage } from "../types";
+import { HOSPITAL_INFO, GenerateType } from "../constants";
 
 export const generateReportHTML = (data: ReportData): string => {
   const { patientInfo, images } = data;
 
-  const renderSection = (title: string, content: string, sectionKey?: string) => {
-    const sectionImages: SectionImage[] = sectionKey ? (images[sectionKey] ?? []) : [];
-    if (!content && sectionImages.length === 0) return '';
+  const renderSection = (
+    title: string,
+    content: string,
+    sectionKey?: string,
+  ) => {
+    const sectionImages: SectionImage[] = sectionKey
+      ? (images[sectionKey] ?? [])
+      : [];
+    if (!content && sectionImages.length === 0) return "";
 
     const imgHTML = sectionImages
-      .map(img => {
+      .map((img) => {
         const captionHTML = img.caption
           ? `<div class="img-caption">${img.caption}</div>`
-          : '';
+          : "";
         return `<div class="img-wrap"><img src="${img.previewUrl}" alt="검사 이미지"/>${captionHTML}</div>`;
       })
-      .join('');
+      .join("");
 
     return `
       <section class="report-section">
         <h2 class="section-title">${title}</h2>
-        ${content ? `<div class="section-body">${content.replace(/\n/g, '<br/>')}</div>` : ''}
-        ${imgHTML ? `<div class="img-grid">${imgHTML}</div>` : ''}
+        ${content ? `<div class="section-body">${content.replace(/\n/g, "<br/>")}</div>` : ""}
+        ${imgHTML ? `<div class="img-grid">${imgHTML}</div>` : ""}
       </section>`;
   };
 
@@ -34,7 +40,7 @@ export const generateReportHTML = (data: ReportData): string => {
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  
+
   body {
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 13px;
@@ -42,7 +48,7 @@ export const generateReportHTML = (data: ReportData): string => {
     background: #f4f6fa;
     line-height: 1.7;
   }
-  
+
   .page {
     max-width: 800px;
     margin: 0 auto;
@@ -73,9 +79,14 @@ export const generateReportHTML = (data: ReportData): string => {
     background: white;
     border-radius: 16px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 36px;
     flex-shrink: 0;
     box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    overflow: hidden;
+    padding: 4px;
+  }
+  .header-logo img {
+    width: 100%; height: 100%;
+    object-fit: contain;
   }
   .header-clinic {
     flex: 1;
@@ -190,12 +201,12 @@ export const generateReportHTML = (data: ReportData): string => {
 
   /* ── SECTIONS ── */
   .content { padding: 0 48px 48px; }
-  
+
   .report-section {
     margin-top: 28px;
     page-break-inside: avoid;
   }
-  
+
   .section-title {
     font-size: 14px;
     font-weight: 700;
@@ -205,7 +216,7 @@ export const generateReportHTML = (data: ReportData): string => {
     margin-bottom: 12px;
     background: linear-gradient(to right, #f0f5ff, transparent);
   }
-  
+
   .section-body {
     font-size: 12.5px;
     color: #2d3748;
@@ -279,7 +290,7 @@ export const generateReportHTML = (data: ReportData): string => {
 
   <!-- HEADER -->
   <header class="header">
-    <div class="header-logo">🐾</div>
+    <div class="header-logo"><img src="/logo.png" alt="우리동물메디컬센터 로고"/></div>
     <div class="header-clinic">
       <div class="header-clinic-since">SINCE 1999</div>
       <div class="header-clinic-name">우리동물메디컬센터</div>
@@ -294,7 +305,7 @@ export const generateReportHTML = (data: ReportData): string => {
 
   <!-- TITLE -->
   <div class="title-band">
-    <h1>외과 의뢰 보고서</h1>
+    <h1>진료 의뢰 보고서</h1>
     <div class="subtitle">Surgical Referral Report</div>
   </div>
 
@@ -304,41 +315,41 @@ export const generateReportHTML = (data: ReportData): string => {
     <div class="patient-grid">
       <div class="patient-row">
         <div class="patient-label">환자명</div>
-        <div class="patient-value highlight">${patientInfo.name}${patientInfo.patientId ? ` (${patientInfo.patientId})` : ''}</div>
+        <div class="patient-value highlight">${patientInfo.name}${patientInfo.patientId ? ` (${patientInfo.patientId})` : ""}</div>
       </div>
       <div class="patient-row">
         <div class="patient-label">종 / 품종</div>
-        <div class="patient-value">${patientInfo.species}${patientInfo.breed ? ` / ${patientInfo.breed}` : ''}</div>
+        <div class="patient-value">${patientInfo.species}${patientInfo.breed ? ` / ${patientInfo.breed}` : ""}</div>
       </div>
       <div class="patient-row">
         <div class="patient-label">성별 / 나이</div>
-        <div class="patient-value">${patientInfo.gender}${patientInfo.age ? ` / ${patientInfo.age}` : ''}</div>
+        <div class="patient-value">${patientInfo.gender}${patientInfo.age ? ` / ${patientInfo.age}` : ""}</div>
       </div>
       <div class="patient-row">
         <div class="patient-label">체중</div>
-        <div class="patient-value">${patientInfo.weight || '—'}</div>
+        <div class="patient-value">${patientInfo.weight || "—"}</div>
       </div>
       <div class="patient-row">
-        <div class="patient-label">수술일자</div>
-        <div class="patient-value">${patientInfo.surgeryDate || '—'}</div>
+        <div class="patient-label">진료일자</div>
+        <div class="patient-value">${patientInfo.surgeryDate || "—"}</div>
       </div>
       <div class="patient-row">
         <div class="patient-label">의뢰병원</div>
-        <div class="patient-value"><span class="referral-tag">${patientInfo.referralHospital || '—'}</span></div>
+        <div class="patient-value"><span class="referral-tag">${patientInfo.referralHospital || "—"}</span></div>
       </div>
     </div>
   </div>
 
   <!-- SECTIONS -->
   <div class="content">
-    ${renderSection('1. 주호소 및 임상 병력', data.chiefComplaint)}
-    ${renderSection('2. 수술 전 평가 – 혈액 검사', data.bloodTests, 'bloodTests')}
-    ${renderSection('3. 수술 전 평가 – VCM 검사', data.vcmFindings, 'vcmFindings')}
-    ${renderSection('4. DR (X-ray) 소견', data.xrayFindings, 'xrayFindings')}
-    ${renderSection('5. US (초음파) 소견', data.ultrasoundFindings, 'ultrasoundFindings')}
-    ${renderSection('6. CT 소견', data.ctFindings, 'ctFindings')}
-    ${renderSection('7. 수술 과정', data.surgicalProcedure, 'surgicalProcedure')}
-    ${renderSection('8. 수술 후 관리 및 계획', data.postopManagement, 'postopManagement')}
+    ${renderSection("1. 내원 사유 및 주요 증상 요약", data.chiefComplaint)}
+    ${renderSection("2. 혈액 검사", data.bloodTests, "bloodTests")}
+    ${renderSection("3. VCM 검사", data.vcmFindings, "vcmFindings")}
+    ${renderSection("4. DR (X-ray) 소견", data.xrayFindings, "xrayFindings")}
+    ${renderSection("5. US (초음파) 소견", data.ultrasoundFindings, "ultrasoundFindings")}
+    ${renderSection("6. CT 소견", data.ctFindings, "ctFindings")}
+    ${renderSection("7. 진료(수술) 과정", data.surgicalProcedure, "surgicalProcedure")}
+    ${renderSection("8. 진료(수술) 후 관리 및 계획", data.postopManagement, "postopManagement")}
   </div>
 
   <!-- FOOTER -->
@@ -357,3 +368,144 @@ export const generateReportHTML = (data: ReportData): string => {
 </body>
 </html>`;
 };
+
+const generateBlogHTML = (data: ReportData): string => {
+  const { patientInfo } = data;
+
+  const renderBlock = (title: string, content: string) => {
+    if (!content) return "";
+    return `
+      <section class="block">
+        <h2>${title}</h2>
+        <div class="body">${content.replace(/\n/g, "<br/>")}</div>
+      </section>`;
+  };
+
+  const patientMeta = [
+    patientInfo.species && patientInfo.breed
+      ? `${patientInfo.species} / ${patientInfo.breed}`
+      : patientInfo.species,
+    patientInfo.gender,
+    patientInfo.age,
+    patientInfo.weight,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>블로그 초안 - ${patientInfo.name || "케이스"}</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    color: #1a1a2e;
+    background: #ffffff;
+    line-height: 1.9;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 48px 80px;
+  }
+
+  .blog-header {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+  }
+  .blog-source {
+    font-size: 11px;
+    font-weight: 600;
+    color: #4a90d9;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .blog-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a3a5c;
+    line-height: 1.4;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+  .blog-meta {
+    font-size: 13px;
+    color: #718096;
+    line-height: 1.6;
+  }
+
+  .block {
+    margin-bottom: 40px;
+  }
+  .block h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a3a5c;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .body {
+    font-size: 15px;
+    color: #2d3748;
+    line-height: 2;
+  }
+
+  .blog-footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 12px;
+    color: #a0aec0;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  @media print {
+    body { background: white; }
+    .page { padding: 40px 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="blog-header">
+    <div class="blog-source">${HOSPITAL_INFO.name} · 케이스 스터디</div>
+    <div class="blog-title">${patientInfo.breed || patientInfo.species || "반려동물"} 케이스 리포트${patientInfo.surgeryDate ? ` — ${patientInfo.surgeryDate}` : ""}</div>
+    ${patientMeta ? `<div class="blog-meta">${patientMeta}</div>` : ""}
+  </header>
+
+  ${renderBlock("내원 배경", data.chiefComplaint)}
+  ${renderBlock("혈액 검사", data.bloodTests)}
+  ${renderBlock("X-ray 소견", data.xrayFindings)}
+  ${renderBlock("초음파 소견", data.ultrasoundFindings)}
+  ${renderBlock("CT 소견", data.ctFindings)}
+  ${renderBlock("진료 및 수술 과정", data.surgicalProcedure)}
+  ${renderBlock("회복 관리 및 보호자 가이드", data.postopManagement)}
+
+  <footer class="blog-footer">
+    ${HOSPITAL_INFO.name} · ${HOSPITAL_INFO.address} · ${HOSPITAL_INFO.tel}
+  </footer>
+
+</div>
+</body>
+</html>`;
+};
+
+export const HTML_GENERATOR_MAP: Record<GenerateType, (data: ReportData) => string> = {
+  report: generateReportHTML,
+  blog: generateBlogHTML,
+};
+
+export const generateHTML = (data: ReportData, type: GenerateType = "report"): string =>
+  HTML_GENERATOR_MAP[type](data);

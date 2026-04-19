@@ -24,7 +24,7 @@ export const generateReportHTML = (data: ReportData): string => {
       .join("");
 
     return `
-      <section class="report-section">
+      <section class="report-section" data-pdf-section>
         <h2 class="section-title">${title}</h2>
         ${content ? `<div class="section-body">${content.replace(/\n/g, "<br/>")}</div>` : ""}
         ${imgHTML ? `<div class="img-grid">${imgHTML}</div>` : ""}
@@ -289,7 +289,7 @@ export const generateReportHTML = (data: ReportData): string => {
 <div class="page">
 
   <!-- HEADER -->
-  <header class="header">
+  <header class="header" data-pdf-section>
     <div class="header-logo"><img src="/logo.png" alt="우리동물메디컬센터 로고"/></div>
     <div class="header-clinic">
       <div class="header-clinic-since">SINCE 1999</div>
@@ -304,13 +304,13 @@ export const generateReportHTML = (data: ReportData): string => {
   </header>
 
   <!-- TITLE -->
-  <div class="title-band">
+  <div class="title-band" data-pdf-section>
     <h1>진료 의뢰 보고서</h1>
     <div class="subtitle">Surgical Referral Report</div>
   </div>
 
   <!-- PATIENT INFO -->
-  <div class="patient-card">
+  <div class="patient-card" data-pdf-section>
     <div class="patient-card-header">📋 환자 정보 · Patient Information</div>
     <div class="patient-grid">
       <div class="patient-row">
@@ -353,7 +353,7 @@ export const generateReportHTML = (data: ReportData): string => {
   </div>
 
   <!-- FOOTER -->
-  <footer class="footer">
+  <footer class="footer" data-pdf-section>
     <div class="footer-text">
       진료를 의뢰해 주심에 깊은 감사를 드립니다.<br/>
       본 보고서에 대해 궁금하신 점은 언제든 본 센터로 문의해 주시기 바랍니다.
@@ -375,7 +375,7 @@ const generateBlogHTML = (data: ReportData): string => {
   const renderBlock = (title: string, content: string) => {
     if (!content) return "";
     return `
-      <section class="block">
+      <section class="block" data-pdf-section>
         <h2>${title}</h2>
         <div class="body">${content.replace(/\n/g, "<br/>")}</div>
       </section>`;
@@ -479,7 +479,7 @@ const generateBlogHTML = (data: ReportData): string => {
 <body>
 <div class="page">
 
-  <header class="blog-header">
+  <header class="blog-header" data-pdf-section>
     <div class="blog-source">${HOSPITAL_INFO.name} · 케이스 스터디</div>
     <div class="blog-title">${patientInfo.breed || patientInfo.species || "반려동물"} 케이스 리포트${patientInfo.surgeryDate ? ` — ${patientInfo.surgeryDate}` : ""}</div>
     ${patientMeta ? `<div class="blog-meta">${patientMeta}</div>` : ""}

@@ -82,7 +82,7 @@ export const WorkspacePage: React.FC = () => {
         patientName={reportData.patientInfo.name}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <main className="max-w-8xl mx-auto px-4 sm:px-6 py-6">
         {step === "upload" && (
           <div className="max-w-2xl mx-auto">
             <div className="mb-6">
@@ -106,9 +106,9 @@ export const WorkspacePage: React.FC = () => {
         )}
 
         {step === "edit" && (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
             {/* 편집 영역 */}
-            <div>
+            <div className="xl:col-span-2">
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <h1 className="text-xl font-bold text-slate-800">
@@ -132,7 +132,7 @@ export const WorkspacePage: React.FC = () => {
             </div>
 
             {/* 실시간 미리보기 (데스크톱) */}
-            <div className="hidden xl:block">
+            <div className="hidden xl:block xl:col-span-3">
               <div className="mb-4">
                 <h2 className="text-xl font-bold text-slate-800">
                   실시간 미리보기

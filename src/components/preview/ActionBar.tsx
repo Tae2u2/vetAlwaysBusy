@@ -20,7 +20,7 @@ export const ActionBar: React.FC<Props> = ({ onPrint, onDownload, showEmailForm,
       onClick={onDownload}
       className="flex items-center gap-2 px-4 py-2.5 bg-slate-700 text-white rounded-xl text-sm font-semibold hover:bg-slate-800 transition-colors"
     >
-      <Download size={16} /> HTML 저장
+      <Download size={16} /> PDF 저장
     </button>
     <button
       onClick={onEmailToggle}

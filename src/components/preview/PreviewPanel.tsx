@@ -6,6 +6,9 @@ import { HOSPITAL_INFO } from "../../constants";
 import { ActionBar } from "./ActionBar";
 import { EmailForm } from "./EmailForm";
 import { ReportPreviewFrame } from "./ReportPreviewFrame";
+import { jsPDF } from "jspdf";
+import * as html2canvasNS from "html2canvas";
+const html2canvas = (html2canvasNS as any).default ?? (html2canvasNS as any);
 
 const BREVO_API_KEY = process.env.REACT_APP_BREVO_API_KEY || "";
 const SENDER_EMAIL = process.env.REACT_APP_CLINIC_EMAIL || HOSPITAL_INFO.email;
@@ -81,8 +84,6 @@ function buildEmailHtml(data: ReportData): string {
 }
 
 async function generatePDFBase64(htmlContent: string): Promise<string> {
-  const { jsPDF } = await import("jspdf");
-  await import("html2canvas");
 
   const container = document.createElement("div");
   container.style.cssText =
@@ -129,17 +130,124 @@ export const PreviewPanel: React.FC<Props> = ({ data, type = 'report' }) => {
     iframeRef.current?.contentWindow?.print();
   };
 
-  const handleDownload = () => {
-    const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `진료보고서_${data.patientInfo.name || "환자"}_${new Date()
+  const handleDownload = async () => {
+    const marginMm = 10;
+    const pageW = 210;
+    const pageH = 297;
+    const contentW = pageW - marginMm * 2; // 190mm
+    const contentH = pageH - marginMm * 2; // 277mm
+    const sectionGapMm = 5;
+
+    const fileName = `진료보고서_${data.patientInfo.name || "환자"}_${new Date()
       .toLocaleDateString("ko-KR")
       .replace(/\./g, "")
-      .replace(/ /g, "")}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
+      .replace(/ /g, "")}.pdf`;
+
+    const container = document.createElement("div");
+    container.style.cssText =
+      "position:fixed;left:-9999px;top:0;width:794px;background:white;";
+    container.innerHTML = htmlContent;
+    document.body.appendChild(container);
+
+    try {
+      const imgs = Array.from(container.querySelectorAll("img"));
+      await Promise.all(
+        imgs.map((img) =>
+          img.complete && img.naturalWidth > 0
+            ? Promise.resolve()
+            : new Promise<void>((resolve) => {
+                img.onload = () => resolve();
+                img.onerror = () => resolve();
+              })
+        )
+      );
+
+      let sections = Array.from(
+        container.querySelectorAll("[data-pdf-section]")
+      ) as HTMLElement[];
+
+      if (sections.length === 0) {
+        console.warn("[PDF] data-pdf-section 없음 — 전체 컨테이너를 단일 섹션으로 처리");
+        sections = [container];
+      }
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      let cursorY = marginMm;
+
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+        });
+
+        if (canvas.width === 0 || canvas.height === 0) continue;
+
+        const imgW = contentW;
+        const imgH = (canvas.height * imgW) / canvas.width;
+
+        if (imgH > contentH) {
+          // 섹션이 A4 한 페이지보다 큰 경우 — 내부 슬라이싱
+          const pxPerMm = canvas.width / imgW;
+          let sliceTop = 0;
+
+          while (sliceTop < canvas.height) {
+            const availableH = pageH - marginMm - cursorY;
+            const slicePx = Math.min(availableH * pxPerMm, canvas.height - sliceTop);
+
+            if (slicePx <= 0) {
+              pdf.addPage();
+              cursorY = marginMm;
+              continue;
+            }
+
+            const sliceCanvas = document.createElement("canvas");
+            sliceCanvas.width = canvas.width;
+            sliceCanvas.height = slicePx;
+            sliceCanvas.getContext("2d")!.drawImage(
+              canvas,
+              0, sliceTop, canvas.width, slicePx,
+              0, 0, canvas.width, slicePx
+            );
+
+            const sliceImgH = slicePx / pxPerMm;
+            pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", marginMm, cursorY, imgW, sliceImgH);
+            cursorY += sliceImgH;
+            sliceTop += slicePx;
+
+            if (sliceTop < canvas.height) {
+              pdf.addPage();
+              cursorY = marginMm;
+            }
+          }
+        } else {
+          // 일반 섹션 — 페이지에 안 들어가면 다음 페이지로
+          if (cursorY > marginMm && cursorY + imgH > pageH - marginMm) {
+            pdf.addPage();
+            cursorY = marginMm;
+          }
+          pdf.addImage(canvas.toDataURL("image/png"), "PNG", marginMm, cursorY, imgW, imgH);
+          cursorY += imgH;
+        }
+
+        if (i < sections.length - 1) {
+          cursorY += sectionGapMm;
+          if (cursorY >= pageH - marginMm) {
+            pdf.addPage();
+            cursorY = marginMm;
+          }
+        }
+      }
+
+      pdf.save(fileName);
+    } catch (err) {
+      console.error("PDF 생성 실패:", err);
+      alert("PDF 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      document.body.removeChild(container);
+    }
   };
 
   const handleSendEmail = async (emailTo: string) => {

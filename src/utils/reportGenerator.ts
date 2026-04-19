@@ -359,7 +359,7 @@ export const generateReportHTML = (data: ReportData): string => {
       본 보고서에 대해 궁금하신 점은 언제든 본 센터로 문의해 주시기 바랍니다.
     </div>
     <div class="footer-brand">
-      우리동물메디컬센터 외과팀 드림
+      우리동물메디컬센터 드림
       <span>Woori Animal Medical Center</span>
     </div>
   </footer>
@@ -502,10 +502,15 @@ const generateBlogHTML = (data: ReportData): string => {
 </html>`;
 };
 
-export const HTML_GENERATOR_MAP: Record<GenerateType, (data: ReportData) => string> = {
+export const HTML_GENERATOR_MAP: Record<
+  GenerateType,
+  (data: ReportData) => string
+> = {
   report: generateReportHTML,
   blog: generateBlogHTML,
 };
 
-export const generateHTML = (data: ReportData, type: GenerateType = "report"): string =>
-  HTML_GENERATOR_MAP[type](data);
+export const generateHTML = (
+  data: ReportData,
+  type: GenerateType = "report",
+): string => HTML_GENERATOR_MAP[type](data);

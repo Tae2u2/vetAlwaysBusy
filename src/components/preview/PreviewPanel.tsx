@@ -71,7 +71,7 @@ function buildEmailHtml(data: ReportData): string {
       <p>
         문의 사항이 있으시면 언제든지 연락 주시기 바랍니다.<br />
         감사합니다.<br /><br />
-        <strong>우리동물메디컬센터 외과팀</strong> 수의사 드림.
+        <strong>우리동물메디컬센터 </strong> 드림.
       </p>
     </div>
     <div class="ftr">
@@ -84,7 +84,6 @@ function buildEmailHtml(data: ReportData): string {
 }
 
 async function generatePDFBase64(htmlContent: string): Promise<string> {
-
   const container = document.createElement("div");
   container.style.cssText =
     "position:fixed;left:-9999px;top:0;width:794px;background:white;";
@@ -116,7 +115,7 @@ interface Props {
   type?: GenerateType;
 }
 
-export const PreviewPanel: React.FC<Props> = ({ data, type = 'report' }) => {
+export const PreviewPanel: React.FC<Props> = ({ data, type = "report" }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSending, setEmailSending] = useState(false);
@@ -158,20 +157,26 @@ export const PreviewPanel: React.FC<Props> = ({ data, type = 'report' }) => {
             : new Promise<void>((resolve) => {
                 img.onload = () => resolve();
                 img.onerror = () => resolve();
-              })
-        )
+              }),
+        ),
       );
 
       let sections = Array.from(
-        container.querySelectorAll("[data-pdf-section]")
+        container.querySelectorAll("[data-pdf-section]"),
       ) as HTMLElement[];
 
       if (sections.length === 0) {
-        console.warn("[PDF] data-pdf-section 없음 — 전체 컨테이너를 단일 섹션으로 처리");
+        console.warn(
+          "[PDF] data-pdf-section 없음 — 전체 컨테이너를 단일 섹션으로 처리",
+        );
         sections = [container];
       }
 
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
       let cursorY = marginMm;
 
       for (let i = 0; i < sections.length; i++) {
@@ -195,7 +200,10 @@ export const PreviewPanel: React.FC<Props> = ({ data, type = 'report' }) => {
 
           while (sliceTop < canvas.height) {
             const availableH = pageH - marginMm - cursorY;
-            const slicePx = Math.min(availableH * pxPerMm, canvas.height - sliceTop);
+            const slicePx = Math.min(
+              availableH * pxPerMm,
+              canvas.height - sliceTop,
+            );
 
             if (slicePx <= 0) {
               pdf.addPage();
@@ -206,14 +214,29 @@ export const PreviewPanel: React.FC<Props> = ({ data, type = 'report' }) => {
             const sliceCanvas = document.createElement("canvas");
             sliceCanvas.width = canvas.width;
             sliceCanvas.height = slicePx;
-            sliceCanvas.getContext("2d")!.drawImage(
-              canvas,
-              0, sliceTop, canvas.width, slicePx,
-              0, 0, canvas.width, slicePx
-            );
+            sliceCanvas
+              .getContext("2d")!
+              .drawImage(
+                canvas,
+                0,
+                sliceTop,
+                canvas.width,
+                slicePx,
+                0,
+                0,
+                canvas.width,
+                slicePx,
+              );
 
             const sliceImgH = slicePx / pxPerMm;
-            pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", marginMm, cursorY, imgW, sliceImgH);
+            pdf.addImage(
+              sliceCanvas.toDataURL("image/png"),
+              "PNG",
+              marginMm,
+              cursorY,
+              imgW,
+              sliceImgH,
+            );
             cursorY += sliceImgH;
             sliceTop += slicePx;
 
@@ -228,7 +251,14 @@ export const PreviewPanel: React.FC<Props> = ({ data, type = 'report' }) => {
             pdf.addPage();
             cursorY = marginMm;
           }
-          pdf.addImage(canvas.toDataURL("image/png"), "PNG", marginMm, cursorY, imgW, imgH);
+          pdf.addImage(
+            canvas.toDataURL("image/png"),
+            "PNG",
+            marginMm,
+            cursorY,
+            imgW,
+            imgH,
+          );
           cursorY += imgH;
         }
 

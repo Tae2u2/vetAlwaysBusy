@@ -47,8 +47,8 @@ export const LoginPage: React.FC = () => {
         <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#1a3a5c] to-[#2a5298] px-8 py-8 text-center">
-            <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg mb-4">
-              🐾
+            <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-4 overflow-hidden">
+              <img src="/logo.png" alt="Logo" className="w-full h-full" />
             </div>
             <h1 className="text-white font-bold text-xl tracking-tight">
               우리동물메디컬센터

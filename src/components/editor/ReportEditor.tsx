@@ -163,6 +163,20 @@ export const ReportEditor: React.FC<Props> = ({ data, onChange }) => {
         />
       </SectionCard>
 
+      <SectionCard title="안과 검진 소견">
+        <Field
+          label=""
+          value={data.ophthalmologyFindings}
+          onChange={(v) => update("ophthalmologyFindings", v)}
+          multiline
+          placeholder="OU/OD/OS, 각막, 결막, IOP, STT 등 안과 검진 소견..."
+        />
+        <ImageSlotEditor
+          images={data.images["ophthalmologyFindings"] ?? []}
+          onImagesChange={(imgs) => updateImages("ophthalmologyFindings", imgs)}
+        />
+      </SectionCard>
+
       <SectionCard title="진료(수술) 과정">
         <Field
           label=""

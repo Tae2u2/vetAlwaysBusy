@@ -31,14 +31,15 @@ const mapToReportData = (raw: any): Partial<ReportData> => {
 
   return {
     patientInfo,
-    chiefComplaint:     chiefComplaint || '',
-    bloodTests:         formatBloodTests(diagnosticResults?.bloodTests),
-    vcmFindings:        '',
-    xrayFindings:       formatList(diagnosticResults?.xrayFindings),
-    ultrasoundFindings: formatList(diagnosticResults?.ultrasoundFindings),
-    ctFindings:         '',
-    surgicalProcedure:  surgicalText,
-    postopManagement:   formatList(postopManagement),
+    chiefComplaint:          chiefComplaint || '',
+    bloodTests:              formatBloodTests(diagnosticResults?.bloodTests) || formatList(raw.bloodTests),
+    vcmFindings:             formatList(raw.vcmFindings),
+    xrayFindings:            formatList(diagnosticResults?.xrayFindings) || formatList(raw.xrayFindings),
+    ultrasoundFindings:      formatList(diagnosticResults?.ultrasoundFindings) || formatList(raw.ultrasoundFindings),
+    ctFindings:              formatList(raw.ctFindings),
+    ophthalmologyFindings:   formatList(raw.ophthalmologyFindings),
+    surgicalProcedure:       surgicalText,
+    postopManagement:        formatList(postopManagement),
   };
 };
 

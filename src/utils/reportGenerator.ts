@@ -348,8 +348,9 @@ export const generateReportHTML = (data: ReportData): string => {
     ${renderSection("4. DR (X-ray) 소견", data.xrayFindings, "xrayFindings")}
     ${renderSection("5. US (초음파) 소견", data.ultrasoundFindings, "ultrasoundFindings")}
     ${renderSection("6. CT 소견", data.ctFindings, "ctFindings")}
-    ${renderSection("7. 진료(수술) 과정", data.surgicalProcedure, "surgicalProcedure")}
-    ${renderSection("8. 진료(수술) 후 관리 및 계획", data.postopManagement, "postopManagement")}
+    ${renderSection("7. 안과 검진 소견", data.ophthalmologyFindings, "ophthalmologyFindings")}
+    ${renderSection("8. 진료(수술) 과정", data.surgicalProcedure, "surgicalProcedure")}
+    ${renderSection("9. 진료(수술) 후 관리 및 계획", data.postopManagement, "postopManagement")}
   </div>
 
   <!-- FOOTER -->

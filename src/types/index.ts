@@ -38,6 +38,7 @@ export interface ReportData {
   xrayFindings: string;
   ultrasoundFindings: string;
   ctFindings: string;
+  ophthalmologyFindings: string;
   surgicalProcedure: string;
   postopManagement: string;
   sections: ReportSection[];

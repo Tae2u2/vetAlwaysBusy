@@ -28,6 +28,7 @@ const EMPTY_DATA: ReportData = {
   xrayFindings: "",
   ultrasoundFindings: "",
   ctFindings: "",
+  ophthalmologyFindings: "",
   surgicalProcedure: "",
   postopManagement: "",
   sections: [],

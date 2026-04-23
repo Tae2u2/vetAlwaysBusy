@@ -52,12 +52,11 @@ function buildEmailHtml(data: ReportData): string {
 <body>
   <div class="wrap">
     <div class="hdr">
-      <h1>우리동물메디컬센터 외과 의뢰 보고서</h1>
-      <p>Woori Animal Medical Center · Surgical Referral Report</p>
+      <h1>우리동물메디컬센터 진료 보고서</h1>
     </div>
     <div class="bdy">
       <p>
-        안녕하세요 수의사 선생님,<br />
+        안녕하세요. 우리동물메디컬센터입니다.<br />
         <strong>${referringHospital}</strong>에서 의뢰하신
         <strong>${petName}</strong> 환자의 진료 기록입니다.<br />
         자세한 내용은 첨부된 PDF 파일을 확인해 주시기 바랍니다.
@@ -65,13 +64,12 @@ function buildEmailHtml(data: ReportData): string {
       <table class="tbl">
         <tr><td>환자명</td><td>${petName}</td></tr>
         <tr><td>품종</td><td>${petBreed}</td></tr>
-        <tr><td>의뢰 병원</td><td>${referringHospital}</td></tr>
         <tr><td>발송일</td><td>${referDate}</td></tr>
       </table>
       <p>
         문의 사항이 있으시면 언제든지 연락 주시기 바랍니다.<br />
-        감사합니다.<br /><br />
-        <strong>우리동물메디컬센터 </strong> 드림.
+         감사합니다.<br /><br />
+        <strong>우리동물메디컬센터</strong> 드림.
       </p>
     </div>
     <div class="ftr">

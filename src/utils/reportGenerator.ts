@@ -230,19 +230,19 @@ export const generateReportHTML = (data: ReportData): string => {
   /* ── IMAGES ── */
   .img-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 12px;
     margin-top: 12px;
   }
   .img-wrap {
     border: 1.5px solid #dde6f4;
-    border-radius: 8px;
+    border-radius: 2px;
     overflow: hidden;
     background: #000;
   }
   .img-wrap img {
     width: 100%;
-    height: 180px;
+    height: 300px;
     object-fit: contain;
     display: block;
   }
@@ -289,24 +289,14 @@ export const generateReportHTML = (data: ReportData): string => {
 <div class="page">
 
   <!-- HEADER -->
-  <header class="header" data-pdf-section>
-    <div class="header-logo"><img src="/logo.png" alt="우리동물메디컬센터 로고"/></div>
-    <div class="header-clinic">
-      <div class="header-clinic-since">SINCE 1999</div>
-      <div class="header-clinic-name">우리동물메디컬센터</div>
-      <div class="header-clinic-en">Woori Animal Medical Center 24시</div>
-    </div>
-    <div class="header-contact">
-      <strong>${HOSPITAL_INFO.address}</strong><br/>
-      Tel. ${HOSPITAL_INFO.tel}<br/>
-      E-mail. ${HOSPITAL_INFO.email}
-    </div>
+  <header data-pdf-section style="text-align:center; padding:16px 0;">
+    <img src="/logo.png" alt="우리동물메디컬센터 로고" style="height:300px; object-fit:contain;"/>
   </header>
 
   <!-- TITLE -->
   <div class="title-band" data-pdf-section>
     <h1>진료 의뢰 보고서</h1>
-    <div class="subtitle">Surgical Referral Report</div>
+    <div class="subtitle">Medical Referral Report</div>
   </div>
 
   <!-- PATIENT INFO -->
@@ -335,7 +325,7 @@ export const generateReportHTML = (data: ReportData): string => {
       </div>
       <div class="patient-row">
         <div class="patient-label">의뢰병원</div>
-        <div class="patient-value"><span class="referral-tag">${patientInfo.referralHospital || "—"}</span></div>
+        <div class="patient-value">${patientInfo.referralHospital || "—"}</div>
       </div>
     </div>
   </div>
@@ -361,7 +351,6 @@ export const generateReportHTML = (data: ReportData): string => {
     </div>
     <div class="footer-brand">
       우리동물메디컬센터 드림
-      <span>Woori Animal Medical Center</span>
     </div>
   </footer>
 
